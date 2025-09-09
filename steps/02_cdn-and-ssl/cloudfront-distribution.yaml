@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFront distribution for static website'
+
+Parameters:
+  BucketName:
+    Type: String
+    Description: Name of the S3 bucket containing your website files
+  OriginAccessIdentityId:
+    Type: String
+    Description: CloudFront Origin Access Identity ID
+
+Resources:
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: !Sub 'CloudFront distribution for ${BucketName}'
+        DefaultRootObject: index.html
+        
+        Origins:
+          - Id: S3Origin
+            DomainName: !Sub '${BucketName}.s3.amazonaws.com'
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${OriginAccessIdentityId}'
+        
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          CachedMethods:
+            - GET
+            - HEAD
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          MinTTL: 0
+          DefaultTTL: 86400
+          MaxTTL: 31536000
+          Compress: true
+        
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: '/error.html'
+            ErrorCachingMinTTL: 300
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: '/error.html'
+            ErrorCachingMinTTL: 300
+        
+        PriceClass: PriceClass_100
+        HttpVersion: http2
+        IPV6Enabled: true
+        
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+
+Outputs:
+  DistributionId:
+    Description: CloudFront Distribution ID
+    Value: !Ref CloudFrontDistribution
+    Export:
+      Name: !Sub '${AWS::StackName}-DistributionId'
+  
+  DistributionDomainName:
+    Description: CloudFront Distribution Domain Name
+    Value: !GetAtt CloudFrontDistribution.DomainName
+    Export:
+      Name: !Sub '${AWS::StackName}-DomainName'
+  
+  WebsiteURL:
+    Description: Website URL
+    Value: !Sub 'https://${CloudFrontDistribution.DomainName}'

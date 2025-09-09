@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Static Website with CloudFront</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .ssl-badge { 
+            color: green; 
+            font-weight: bold; 
+        }
+        .cdn-info {
+            background: #f0f8ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to My Static Website</h1>
+        <p class="ssl-badge">🔒 Now with SSL/HTTPS Support!</p>
+    </header>
+    <main>
+        <div class="cdn-info">
+            <h2>🚀 Powered by CloudFront CDN</h2>
+            <p>This website is now served from AWS edge locations worldwide for faster loading!</p>
+            <ul>
+                <li>✅ HTTPS/SSL encryption</li>
+                <li>✅ Global content delivery</li>
+                <li>✅ Improved performance</li>
+                <li>✅ Better security</li>
+            </ul>
+        </div>
+        <p>This static website is now hosted on AWS S3 with CloudFront CDN!</p>
+    </main>
+    <script>
+        // Display some info about the current setup
+        console.log('Website served via CloudFront CDN');
+        console.log('SSL/HTTPS: ' + (location.protocol === 'https:' ? 'Enabled' : 'Not enabled'));
+    </script>
+</body>
+</html>

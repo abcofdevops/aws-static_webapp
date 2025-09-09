@@ -1,0 +1,31 @@
+{
+  "CacheBehaviors": [
+    {
+      "PathPattern": "*.js",
+      "TargetOriginId": "S3Origin",
+      "ViewerProtocolPolicy": "redirect-to-https",
+      "MinTTL": 0,
+      "DefaultTTL": 31536000,
+      "MaxTTL": 31536000,
+      "Compress": true
+    },
+    {
+      "PathPattern": "*.css",
+      "TargetOriginId": "S3Origin", 
+      "ViewerProtocolPolicy": "redirect-to-https",
+      "MinTTL": 0,
+      "DefaultTTL": 31536000,
+      "MaxTTL": 31536000,
+      "Compress": true
+    },
+    {
+      "PathPattern": "*.html",
+      "TargetOriginId": "S3Origin",
+      "ViewerProtocolPolicy": "redirect-to-https", 
+      "MinTTL": 0,
+      "DefaultTTL": 3600,
+      "MaxTTL": 86400,
+      "Compress": true
+    }
+  ]
+}
