@@ -1,0 +1,30 @@
+{
+  "Changes": [
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "VALIDATION_NAME_1",
+        "Type": "CNAME", 
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "VALIDATION_VALUE_1"
+          }
+        ]
+      }
+    },
+    {
+      "Action": "CREATE", 
+      "ResourceRecordSet": {
+        "Name": "VALIDATION_NAME_2",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "VALIDATION_VALUE_2"
+          }
+        ]
+      }
+    }
+  ]
+}

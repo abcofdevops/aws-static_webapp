@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Professional Static Website</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .domain-badge { 
+            color: #2e8b57; 
+            font-weight: bold; 
+            background: #f0fff0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .feature-card h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .ssl-indicator {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🌟 Welcome to My Professional Website</h1>
+        <div class="domain-badge">
+            🌐 Custom Domain: <span id="current-domain"></span>
+        </div>
+        <p class="ssl-indicator">🔒 Secured with Custom SSL Certificate</p>
+    </header>
+    
+    <main>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>🚀 Global CDN</h3>
+                <p>Served from AWS CloudFront edge locations worldwide for lightning-fast performance.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🔒 Custom SSL</h3>
+                <p>Professional SSL certificate from AWS Certificate Manager for your custom domain.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🌐 Custom Domain</h3>
+                <p>Professional domain name with full DNS control via Route 53.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>📊 Optimized Caching</h3>
+                <p>Intelligent caching strategies for different content types.</p>
+            </div>
+        </div>
+
+        <section>
+            <h2>🎯 What's New in Step 3</h2>
+            <ul>
+                <li>✅ Custom domain name instead of CloudFront URL</li>
+                <li>✅ Professional SSL certificate for your domain</li>
+                <li>✅ Route 53 DNS management</li>
+                <li>✅ Optimized cache behaviors for different file types</li>
+                <li>✅ Ready for email and subdomain expansion</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>📈 Performance Metrics</h2>
+            <div id="performance-info">
+                <p>Loading performance data...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Hosted on AWS with S3 + CloudFront + Route 53</p>
+        <p>Last updated: <span id="last-updated"></span></p>
+    </footer>
+
+    <script>
+        // Display current domain
+        document.getElementById('current-domain').textContent = window.location.hostname;
+        
+        // Display last updated time
+        document.getElementById('last-updated').textContent = new Date().toLocaleDateString();
+        
+        // Simple performance metrics
+        window.addEventListener('load', function() {
+            const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+            const performanceInfo = document.getElementById('performance-info');
+            performanceInfo.innerHTML = `
+                <p><strong>Page Load Time:</strong> ${loadTime}ms</p>
+                <p><strong>Protocol:</strong> ${location.protocol}</p>
+                <p><strong>Domain:</strong> ${location.hostname}</p>
+                <p><strong>SSL Enabled:</strong> ${location.protocol === 'https:' ? 'Yes ✅' : 'No ❌'}</p>
+            `;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "Changes": [
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "DOMAIN_PLACEHOLDER",
+        "Type": "A",
+        "AliasTarget": {
+          "DNSName": "CLOUDFRONT_DOMAIN_PLACEHOLDER",
+          "EvaluateTargetHealth": false,
+          "HostedZoneId": "Z2FDTNDATAQYW2"
+        }
+      }
+    },
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "SUBDOMAIN_PLACEHOLDER", 
+        "Type": "A",
+        "AliasTarget": {
+          "DNSName": "CLOUDFRONT_DOMAIN_PLACEHOLDER",
+          "EvaluateTargetHealth": false,
+          "HostedZoneId": "Z2FDTNDATAQYW2"
+        }
+      }
+    }
+  ]
+}
