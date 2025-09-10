@@ -149,14 +149,6 @@ echo "Distribution ID: $DISTRIBUTION_ID"
 - [ ] SSL certificate shows as valid in browser
 - [ ] Performance improved (use browser dev tools to check loading times)
 
-## Performance and Caching Configuration
-
-### Cache Behaviors for Different File Types
-
-You can optimize caching further by creating different cache behaviors:
-
-**advanced-cache-config.json:**
-
 ## Cost Estimation
 
 **Monthly costs for a small website (< 1GB, < 10K requests):**
