@@ -1,0 +1,307 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'AWS WAF v2 for CloudFront distribution security'
+
+Parameters:
+  CloudFrontDistributionId:
+    Type: String
+    Description: CloudFront Distribution ID to protect
+  DomainName:
+    Type: String
+    Description: Domain name for naming resources
+  RateLimitPerIP:
+    Type: Number
+    Default: 1000
+    Description: Rate limit per IP address (requests per 5 minutes)
+
+Resources:
+  # WAF Web ACL
+  WebACL:
+    Type: AWS::WAFv2::WebACL
+    Properties:
+      Name: !Sub '${DomainName}-security-acl'
+      Description: !Sub 'WAF ACL for ${DomainName} static website'
+      Scope: CLOUDFRONT
+      DefaultAction:
+        Allow: {}
+      
+      Rules:
+        # AWS Managed Rule - Core Rule Set
+        - Name: AWSManagedRulesCoreRuleSet
+          Priority: 100
+          OverrideAction:
+            None: {}
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesCoreRuleSet
+              ExcludedRules: []
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: CoreRuleSet
+        
+        # AWS Managed Rule - Known Bad Inputs
+        - Name: AWSManagedRulesKnownBadInputsRuleSet
+          Priority: 200
+          OverrideAction:
+            None: {}
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesKnownBadInputsRuleSet
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: KnownBadInputsRuleSet
+        
+        # AWS Managed Rule - Amazon IP Reputation List
+        - Name: AWSManagedRulesAmazonIpReputationList
+          Priority: 300
+          OverrideAction:
+            None: {}
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesAmazonIpReputationList
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: AmazonIpReputationList
+        
+        # Rate Limiting Rule
+        - Name: RateLimitRule
+          Priority: 400
+          Action:
+            Block: {}
+          Statement:
+            RateBasedStatement:
+              Limit: !Ref RateLimitPerIP
+              AggregateKeyType: IP
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: RateLimitRule
+        
+        # Block Common Attack Patterns
+        - Name: BlockSQLInjection
+          Priority: 500
+          Action:
+            Block: {}
+          Statement:
+            SqliMatchStatement:
+              FieldToMatch:
+                AllQueryArguments: {}
+              TextTransformations:
+                - Priority: 1
+                  Type: URL_DECODE
+                - Priority: 2
+                  Type: HTML_ENTITY_DECODE
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: SQLInjectionRule
+        
+        # Block XSS Attempts
+        - Name: BlockXSSAttacks
+          Priority: 600
+          Action:
+            Block: {}
+          Statement:
+            XssMatchStatement:
+              FieldToMatch:
+                AllQueryArguments: {}
+              TextTransformations:
+                - Priority: 1
+                  Type: URL_DECODE
+                - Priority: 2
+                  Type: HTML_ENTITY_DECODE
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: XSSRule
+        
+        # Block Suspicious User Agents
+        - Name: BlockSuspiciousUserAgents
+          Priority: 700
+          Action:
+            Block: {}
+          Statement:
+            ByteMatchStatement:
+              FieldToMatch:
+                SingleHeader:
+                  Name: user-agent
+              PositionalConstraint: CONTAINS
+              SearchString: 'BadBot'
+              TextTransformations:
+                - Priority: 1
+                  Type: LOWERCASE
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: SuspiciousUserAgents
+        
+        # Geographic Restriction (Optional - restrict to specific countries)
+        # Uncomment and modify as needed
+        # - Name: GeoRestrictionRule
+        #   Priority: 800
+        #   Action:
+        #     Block: {}
+        #   Statement:
+        #     GeoMatchStatement:
+        #       CountryCodes:
+        #         - CN  # Block China
+        #         - RU  # Block Russia
+        #   VisibilityConfig:
+        #     SampledRequestsEnabled: true
+        #     CloudWatchMetricsEnabled: true
+        #     MetricName: GeoRestrictionRule
+      
+      VisibilityConfig:
+        SampledRequestsEnabled: true
+        CloudWatchMetricsEnabled: true
+        MetricName: !Sub '${DomainName}WebACL'
+      
+      Tags:
+        - Key: Name
+          Value: !Sub '${DomainName}-waf-acl'
+        - Key: Domain
+          Value: !Ref DomainName
+
+  # CloudWatch Log Group for WAF logs
+  WAFLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/wafv2/${DomainName}'
+      RetentionInDays: 14
+
+  # WAF Logging Configuration
+  WAFLoggingConfiguration:
+    Type: AWS::WAFv2::LoggingConfiguration
+    Properties:
+      ResourceArn: !GetAtt WebACL.Arn
+      LogDestinationConfigs:
+        - !GetAtt WAFLogGroup.Arn
+      RedactedFields:
+        - SingleHeader:
+            Name: authorization
+        - SingleHeader:
+            Name: cookie
+
+  # CloudWatch Dashboard for WAF Metrics
+  WAFDashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: !Sub '${DomainName}-WAF-Security'
+      DashboardBody: !Sub |
+        {
+          "widgets": [
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "AWS/WAFV2", "AllowedRequests", "WebACL", "${DomainName}-security-acl", "Rule", "ALL", "Region", "CloudFront" ],
+                  [ ".", "BlockedRequests", ".", ".", ".", ".", ".", "." ]
+                ],
+                "period": 300,
+                "stat": "Sum",
+                "region": "us-east-1",
+                "title": "WAF Request Overview"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "AWS/WAFV2", "BlockedRequests", "WebACL", "${DomainName}-security-acl", "Rule", "RateLimitRule", "Region", "CloudFront" ],
+                  [ ".", ".", ".", ".", ".", "CoreRuleSet", ".", "." ],
+                  [ ".", ".", ".", ".", ".", "KnownBadInputsRuleSet", ".", "." ]
+                ],
+                "period": 300,
+                "stat": "Sum",
+                "region": "us-east-1",
+                "title": "Blocked Requests by Rule"
+              }
+            }
+          ]
+        }
+
+  # CloudWatch Alarms
+  HighBlockedRequestsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub '${DomainName}-HighBlockedRequests'
+      AlarmDescription: 'High number of blocked requests detected'
+      MetricName: BlockedRequests
+      Namespace: AWS/WAFV2
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 100
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: WebACL
+          Value: !Sub '${DomainName}-security-acl'
+        - Name: Rule
+          Value: ALL
+        - Name: Region
+          Value: CloudFront
+      AlarmActions:
+        - !Ref SecurityAlertsTopic
+
+  RateLimitAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub '${DomainName}-RateLimitTriggered'
+      AlarmDescription: 'Rate limiting rule triggered frequently'
+      MetricName: BlockedRequests
+      Namespace: AWS/WAFV2
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 50
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: WebACL
+          Value: !Sub '${DomainName}-security-acl'
+        - Name: Rule
+          Value: RateLimitRule
+        - Name: Region
+          Value: CloudFront
+      AlarmActions:
+        - !Ref SecurityAlertsTopic
+
+  # SNS Topic for Security Alerts
+  SecurityAlertsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub '${DomainName}-security-alerts'
+      DisplayName: !Sub 'Security Alerts for ${DomainName}'
+
+Outputs:
+  WebACLArn:
+    Description: WAF Web ACL ARN
+    Value: !GetAtt WebACL.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-WebACLArn'
+  
+  WebACLId:
+    Description: WAF Web ACL ID
+    Value: !Ref WebACL
+    Export:
+      Name: !Sub '${AWS::StackName}-WebACLId'
+  
+  DashboardURL:
+    Description: CloudWatch Dashboard URL
+    Value: !Sub 'https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=${DomainName}-WAF-Security'
+  
+  SecurityAlertsTopicArn:
+    Description: SNS Topic ARN for security alerts
+    Value: !Ref SecurityAlertsTopic
