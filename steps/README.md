@@ -28,3 +28,25 @@ The guide progresses through increasingly sophisticated architectures:
 
 ## Step-by-Step Guide
 
+### [Step 1: Basic S3 Static Website Hosting](./01_basic-S3-website-hosting/)
+
+**What you'll build:** A simple static website using only Amazon S3
+
+**Key Features:**
+- S3 bucket configured for static website hosting
+- Public access for website files  
+- Basic HTML/CSS/JS website accessible via S3 URL
+
+**Architecture:** `Internet → S3 Bucket`
+
+**Cost:** ~$0.03/month
+
+**Time:** 15-30 minutes
+
+**What you'll learn:**
+- S3 bucket creation and configuration
+- Static website hosting setup
+- Bucket policies and public access
+- Basic web hosting concepts
+
+---
