@@ -50,3 +50,27 @@ The guide progresses through increasingly sophisticated architectures:
 - Basic web hosting concepts
 
 ---
+### [Step 2: Add CloudFront CDN and SSL](./02_cdn-and-ssl/)
+
+**What you'll add:** Global CDN, HTTPS support, and enhanced performance
+
+**Key Features:**
+- CloudFront distribution for global content delivery
+- HTTPS/SSL support with free AWS certificate
+- Origin Access Identity (OAI) for security
+- Improved caching and performance worldwide
+
+**Architecture:** `Internet → CloudFront CDN → S3 Bucket`
+
+**Cost:** ~$0.02-0.05/month (free tier covers most usage)
+
+**Time:** 30-45 minutes (plus 15-20 minutes deployment time)
+
+**What you'll learn:**
+- CloudFront configuration and distribution
+- SSL/TLS certificate management
+- Origin Access Identity setup
+- Global content delivery optimization
+- Cache invalidation strategies
+
+---
