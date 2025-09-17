@@ -74,3 +74,54 @@ The guide progresses through increasingly sophisticated architectures:
 - Cache invalidation strategies
 
 ---
+
+### [Step 3: Custom Domain with Route 53](./03_route-53/)
+
+**What you'll add:** Professional custom domain name and DNS management
+
+**Key Features:**
+- Custom domain name (e.g., www.yourdomain.com)
+- Route 53 hosted zone for DNS management
+- Custom SSL certificate for your domain
+- Professional website URL instead of CloudFront domain
+
+**Architecture:** `Internet → Route 53 DNS → CloudFront (Custom Domain + SSL) → S3 Bucket`
+
+**Cost:** ~$0.52/month (includes Route 53 hosted zone)
+
+**Time:** 45-60 minutes (plus DNS propagation time)
+
+**What you'll learn:**
+- Domain registration and management
+- DNS configuration with Route 53
+- SSL certificate validation
+- Domain-to-CloudFront integration
+- Professional website deployment
+
+---
+
+### [Step 4: WAF Security and DDoS Protection](./04_waf/)
+
+**What you'll add:** Enterprise-grade security, monitoring, and protection
+
+**Key Features:**
+- AWS WAF v2 with comprehensive security rules
+- Rate limiting and DDoS protection  
+- Bot detection and geographic restrictions
+- Security monitoring and automated alerting
+- CloudWatch dashboards and metrics
+
+**Architecture:** `Internet → AWS WAF → Route 53 → CloudFront → S3 Bucket + CloudWatch`
+
+**Cost:** ~$3-4/month (includes WAF and monitoring)
+
+**Time:** 60-90 minutes
+
+**What you'll learn:**
+- Web Application Firewall configuration
+- Security rule implementation
+- Attack monitoring and response
+- CloudWatch metrics and alerting
+- Security best practices
+
+---
