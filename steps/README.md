@@ -125,3 +125,25 @@ The guide progresses through increasingly sophisticated architectures:
 - Security best practices
 
 ---
+
+##  Learning Path Recommendations
+
+### Beginner Path
+Start with **Step 1** to understand the basics, then progress through each step to build understanding gradually.
+
+### Intermediate Path  
+If you're familiar with AWS basics, you can start at **Step 2** and reference Step 1 as needed.
+
+### Advanced Path
+For experienced AWS users, review the architecture overview and jump to **Step 3** or **Step 4** directly.
+
+## Cost Breakdown
+
+| Step | Monthly Cost | What's Included |
+|------|-------------|----------------|
+| Step 1 | ~$0.03 | S3 storage only |
+| Step 2 | ~$0.05 | S3 + CloudFront (free tier) |
+| Step 3 | ~$0.52 | Above + Route 53 hosted zone |
+| Step 4 | ~$3-4 | Above + WAF + monitoring |
+
+*Costs are estimates for small websites with low-to-moderate traffic*
