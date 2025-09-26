@@ -147,3 +147,70 @@ For experienced AWS users, review the architecture overview and jump to **Step 3
 | Step 4 | ~$3-4 | Above + WAF + monitoring |
 
 *Costs are estimates for small websites with low-to-moderate traffic*
+
+## Security Features by Step
+
+- **Step 1:** Basic S3 bucket policies
+- **Step 2:** Origin Access Identity, HTTPS encryption
+- **Step 3:** Custom SSL certificates, DNS security
+- **Step 4:** WAF protection, rate limiting, DDoS protection, security monitoring
+
+## Global Performance Features
+
+- **Step 1:** Single region (slow globally)
+- **Step 2:** Global CloudFront edge locations
+- **Step 3:** Custom domain with global CDN
+- **Step 4:** Optimized security with global protection
+
+## Monitoring and Observability
+
+- **Step 1:** Basic S3 metrics
+- **Step 2:** CloudFront metrics and logs
+- **Step 3:** Route 53 health checks and DNS metrics  
+- **Step 4:** Comprehensive security monitoring, CloudWatch dashboards, automated alerting
+
+## Tools and Technologies Used
+
+- **AWS Services:** S3, CloudFront, Route 53, Certificate Manager, WAF, CloudWatch, SNS
+- **Infrastructure:** CloudFormation templates for reproducible deployments
+- **CLI Tools:** AWS CLI for automation and management
+- **Monitoring:** CloudWatch metrics, logs, and dashboards
+- **Security:** WAF rules, SSL certificates, Origin Access Identity
+
+## Important Notes
+
+1. **Region Considerations:** SSL certificates for CloudFront must be created in `us-east-1`
+2. **DNS Propagation:** Can take up to 48 hours for global propagation
+3. **CloudFront Deployments:** Take 15-20 minutes to complete
+4. **Cost Management:** Monitor usage and set up billing alerts
+5. **Security:** Regularly review and update WAF rules and security policies
+
+## Additional Resources
+
+- **AWS Documentation:** [AWS Static Website Hosting](https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html)
+- **Best Practices:** [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/)
+- **Security Guide:** [AWS Security Best Practices](https://aws.amazon.com/security/security-learning/)
+
+## Contributing
+
+This guide is designed to be educational and production-ready. Each step includes:
+- Complete working examples
+- Troubleshooting guides
+- Cost estimates
+- Security best practices
+- Cleanup instructions
+
+## What You'll Achieve
+
+By completing all steps, you'll have:
+
+✅ A production-ready static website  
+✅ Global content delivery network  
+✅ Custom domain with SSL certificate  
+✅ Enterprise-grade security protection  
+✅ Comprehensive monitoring and alerting  
+✅ Scalable, cost-effective hosting solution  
+✅ Complete infrastructure automation  
+✅ Industry-standard security practices  
+
+**Ready to get started? Begin with [Step 1: Basic S3 Website Hosting](./01_basic-S3-website-hosting/)**
